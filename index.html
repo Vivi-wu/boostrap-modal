@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Bootstrap 4, jQuery, modal, ajax, JavaScript, template">
+  <title>Bootstrap v4 Modal with dynamic content</title>
+  <link rel="stylesheet" type="text/css" href="bootstrap.css">
+  <style type="text/css">
+  section {
+    padding-top: 15px;
+    padding-bottom: 40px;
+  }
+  section h4 {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+  }
+  section h4>a { color: initial; }
+  pre {
+    padding: 1.5rem;
+    background-color: #f7f7f9;
+  }
+  code.html {color: #c7254e;}
+  code.js {color: #099;}
+  </style>
+  <script src="jquery.min.js"></script>
+  <script src="modal.js"></script>
+</head>
+<body>
+<div class="container" style="padding-top:30px;padding-bottom:30px;">
+<h2 style="margin-bottom:25px;">jQuery 实现 Boostrap 样式的内容可定制的 Modal</h2>
+
+<nav>导航
+  <ul>
+    <li><a href="#default">默认弹窗</a></li>
+    <li><a href="#view">详情弹窗</a></li>
+    <li><a href="#submit">默认提交弹窗</a></li>
+    <li><a href="#mySubmit">自定义提交弹窗</a></li>
+    <li><a href="#event">弹窗事件</a></li>
+  </ul>
+</nav>
+
+<section>
+<h4><a id="default">默认弹窗</a></h4>
+<p>弹窗组件默认包含：<b>标题</b>、头部关闭按钮、<b>内容区</b>域（空）、<b>底部</b>取消按钮（功能同“关闭”按钮）和 确认按钮（实现 ajax 表单提交）。</p>
+<div class="form-group">
+  <button type="button" class="btn btn-secondary" id="createDefaultDialog">触发默认弹窗</button>
+</div>
+<script>
+$(function(){
+  var dialog = new Dialog({
+    triggerEle: "#createDefaultDialog"
+  });
+})
+</script>
+<pre><code>&lt;!-- <code class="html">HTML</code> --&gt;
+&lt;button type="button" class="btn btn-secondary" id="createDefaultDialog"&gt;触发默认弹窗&lt;/button&gt;
+
+// <code class="js">JavaScript</code>
+$(function(){
+  var dialog = new Dialog({
+    triggerEle: "#createDefaultDialog"
+  });
+})
+</code></pre>
+</section>
+
+<section>
+<h4><a id="view">详情弹窗</a></h4>
+<p>定制弹窗标题，填充自定义主体内容，移除底部按钮</p>
+<div class="form-group">
+  <button type="button" class="btn btn-primary" id="viewDialog" data-item-data="{&quot;gate&quot;:&quot;IcbcZJ&quot;,&quot;transId&quot;:&quot;6666&quot;,&quot;orderCorrectStatus&quot;:&quot;success&quot;,&quot;amount&quot;:&quot;0.00&quot;,&quot;bizType&quot;:&quot;WITHDRAW_BATCH&quot;}">触发详情弹窗</button>
+</div>
+<script>
+$(function(){
+  var dialog2 = new Dialog({
+    titleText: '待审核记录详情',
+    showFooter: false
+  });
+
+  function contentTpl() {
+  /*!
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr><th colspan="2">差错记录</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="text-right" style="width:120px">网关:</td><td>{{gate}}</td>
+      </tr>
+      <tr>
+        <td class="text-right" style="width:120px">流水号:</td><td>{{transId}}</td>
+      </tr>
+      <tr>
+        <td class="text-right" style="width:120px">业务类型:</td><td>{{bizType}}</td>
+      </tr>
+      <tr>
+        <td class="text-right" style="width:120px">金额:</td><td>{{amount}}</td>
+      </tr>
+      <tr>
+        <td class="text-right" style="width:120px">目标状态:</td><td>{{orderCorrectStatus}}</td>
+      </tr>
+    </tbody>
+  </table>
+  */
+  }
+
+  $('#viewDialog').on('click', function(){
+      var data = $(this).data('itemData'),
+      dialogContentEle = $(dialog2._build(dialog2._getDoc(contentTpl), data));
+      dialog2
+        .insertDialogContent(dialogContentEle.get(0).outerHTML)
+        .show()
+    })
+
+  $('output').text('data-item-data="{&quot;gate&quot;:&quot;IcbcZJ&quot;,&quot;transId&quot;:&quot;6666&quot;,&quot;orderCorrectStatus&quot;:&quot;success&quot;,&quot;amount&quot;:&quot;0.00&quot;,&quot;bizType&quot;:&quot;WITHDRAW_BATCH&quot;}"')
+})
+</script>
+<pre><code>&lt;!-- <code class="html">HTML</code> --&gt;
+&lt;button type="button" class="btn btn-primary" id="viewDialog" data-item-data="{&quot;gate&quot;:&quot;IcbcZJ&quot;,&quot;transId&quot;:&quot;6666&quot;,&quot;orderCorrectStatus&quot;:&quot;success&quot;,&quot;amount&quot;:&quot;0.00&quot;,&quot;bizType&quot;:&quot;WITHDRAW_BATCH&quot;}"&gt;触发详情弹窗&lt;/button&gt;
+
+// <code class="js">JavaScript</code>
+var dialog2 = new Dialog({
+  titleText: '待审核记录详情',
+  showFooter: false
+});
+
+function contentTpl() {  // dialog 主体内容模版：待审核记录详情弹窗
+/*!
+&lt;table class="table table-striped table-bordered"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th colspan="2"&gt;差错记录&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td class="text-right" style="width:120px"&gt;网关:&lt;/td&gt;&lt;td&gt;{{gate}}&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td class="text-right" style="width:120px"&gt;流水号:&lt;/td&gt;&lt;td&gt;{{transId}}&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td class="text-right" style="width:120px"&gt;业务类型:&lt;/td&gt;&lt;td&gt;{{bizType}}&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td class="text-right" style="width:120px"&gt;金额:&lt;/td&gt;&lt;td&gt;{{amount}}&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td class="text-right" style="width:120px"&gt;目标状态:&lt;/td&gt;&lt;td&gt;{{orderCorrectStatus}}&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+*/
+}
+
+$('#viewDialog').on('click', function(){
+  var data = $(this).data('itemData'),
+  dialogContentEle = $(dialog2._build(dialog2._getDoc(contentTpl), data));
+  dialog2
+    .insertDialogContent(dialogContentEle.get(0).outerHTML)
+    .show()
+})
+</code></pre>
+<p>以上方案的实现，需保证<code>&lt;button&gt;</code>元素的<code>data-item-data</code>中的特殊字符<code>"</code>（双引号）使用 HTML Entity code 代替，如下：</p>
+<output style="word-break:break-all;margin-bottom:30px;"></output>
+<p>或者先把 JS 对象转为 JSON string，填充模板的时候再转为 JS 对象。</p>
+<pre><code>// <code class="js">JavaScript</code>
+var testData = {"id":"20161014170003330003","recordStatus":"待审核","operateTime":"2016-10-14","operator":"Vivienne","operateNote":"132","gate":"IcbcZJ","transId":"6666","orderCorrectStatus":"success","amount":"0.00","bizType":"WITHDRAW_BATCH"};
+
+$('#viewDialog')
+  .data('itemData', JSON.stringify(testData))
+  .on('click', function(){
+    var data = $(this).data('itemData'),
+    dialogContentEle = $(dialog2._build(dialog2._getDoc(contentTpl), JSON.parse(data)));
+    dialog2
+      .insertDialogContent(dialogContentEle.get(0).outerHTML)
+      .show()
+  })
+</code></pre>
+</section>
+
+<section>
+<h4><a id="submit">默认提交弹窗</a></h4>
+<p>所有包裹在弹窗内容模板中 <code>&lt;form&gt;</code> 元素里，且设置了 <code>name</code> 特性值的字段（输入域）都将被提交。</p>
+<div class="form-group">
+  <button type="button" class="btn btn-primary" id="submitDialog">触发默认提交弹窗</button>
+</div>
+<script>
+$(function(){
+  var dialog3 = new Dialog({
+    titleText: '审核',
+    width: '800px'
+  });
+
+  function contentTpl2() {
+  /*!
+  <form action="/action.htm">
+    <div class="alert alert-danger" role="alert" style="display:none;"></div>
+    <label>备注</label>
+    <textarea class="form-control" name="note" rows="5"></textarea>
+  </form>
+  */
+  }
+
+  $('#submitDialog').on('click', function(){
+    var dialogContentEle = $(dialog3._build(dialog3._getDoc(contentTpl2), null));
+    dialog3
+      .resetConfirmBtnText('审核通过')
+      .insertDialogContent(dialogContentEle.get(0).outerHTML)
+      .show()
+  })
+})
+</script>
+<pre><code>&lt;!-- <code class="html">HTML</code> --&gt;
+&lt;button type="button" class="btn btn-primary" id="submitDialog"&gt;触发默认提交弹窗&lt;/button&gt;
+
+// <code class="js">JavaScript</code>
+var dialog3 = new Dialog({
+  titleText: '审核',
+  width: '800px'
+});
+
+function contentTpl2() {
+/*!
+&lt;form action="/action.htm"&gt;
+  &lt;div class="alert alert-danger" role="alert" style="display:none;"&gt;&lt;/div&gt;
+  &lt;label&gt;备注&lt;/label&gt;
+  &lt;textarea class="form-control" name="note" rows="5"&gt;&lt;/textarea&gt;
+&lt;/form&gt;
+*/
+}
+
+$('#submitDialog').on('click', function(){
+  var dialogContentEle = $(dialog3._build(dialog3._getDoc(contentTpl2), null));
+  dialog3
+    .resetConfirmBtnText('审核通过')
+    .insertDialogContent(dialogContentEle.get(0).outerHTML)
+    .show()
+})
+</code></pre>
+</section>
+
+<section>
+<h4><a id="mySubmit">自定义提交弹窗</a></h4>
+<p>有时除了表单里的字段，还需要向后台提交额外的数据，如：审核是否通过的标志位。这种情况下需要自定义提交数据，并手动调用弹窗的提交函数。</p>
+<div class="form-group">
+  <button type="button" class="btn btn-primary" id="mySubmitDialog">触发自定义提交弹窗</button>
+</div>
+<script>
+$(function(){
+  var dialog4 = new Dialog({titleText: '审核'});
+
+  function contentTpl3() {
+  /*!
+  <form action="/action.htm">
+    <label>备注</label>
+    <textarea class="form-control" name="note" rows="5"></textarea>
+  </form>
+  */
+  }
+
+  $('#mySubmitDialog').on('click', function(){
+    var dialogContentEle = $(dialog4._build(dialog4._getDoc(contentTpl3), null));
+    dialog4
+      .resetDialogFooter('<button type="button" data-action-type="pass" class="btn btn-primary">通过</button> <button type="button" data-action-type="reject" class="btn btn-danger">驳回</button> <button type="button" data-dismiss="modal" class="btn btn-secondary">取消</button>')
+      .insertDialogContent(dialogContentEle.get(0).outerHTML)
+      .show()
+  })
+
+  dialog4.on('click', '[type="button"]', function() {
+    var $this = $(this),
+    actionType = $this.data("actionType"),
+    toSendData = dialog4.$element.find('form').serializeArray()
+    //审核弹框
+    if (actionType) {
+      switch (actionType) {
+        case 'pass':
+          toSendData.push({
+            name: "auditStatus",
+            value: "AUDIT_PASS"
+          })
+          break;
+        case 'reject':
+          toSendData.push({
+            name: "auditStatus",
+            value: "AUDIT_REJECT"
+          })
+          break;
+        default:;
+      }
+      dialog4.ajaxSubmit(null, toSendData)
+    }
+  })
+})
+</script>
+<pre><code>&lt;!-- <code class="html">HTML</code> --&gt;
+&lt;button type="button" class="btn btn-primary" id="mySubmitDialog"&gt;触发自定义提交弹窗&lt;/button&gt;
+
+// <code class="js">JavaScript</code>
+var dialog4 = new Dialog({titleText: '审核'});
+
+function contentTpl3() {
+/*!
+&lt;form action="/action.htm"&gt;
+  &lt;div class="alert alert-danger" role="alert" style="display:none;"&gt;&lt;/div&gt;
+  &lt;label&gt;备注&lt;/label&gt;
+  &lt;textarea class="form-control" name="note" rows="5"&gt;&lt;/textarea&gt;
+&lt;/form&gt;
+*/
+}
+
+$('#mySubmitDialog').on('click', function(){
+  var dialogContentEle = $(dialog4._build(dialog4._getDoc(contentTpl3), null));
+  dialog4
+    .resetDialogFooter('&lt;button type="button" data-action-type="pass" class="btn btn-primary"&gt;通过&lt;/button&gt; &lt;button type="button" data-action-type="reject" class="btn btn-danger"&gt;驳回&lt;/button&gt; &lt;button type="button" data-dismiss="modal" class="btn btn-secondary"&gt;取消&lt;/button&gt;')
+    .insertDialogContent(dialogContentEle.get(0).outerHTML)
+    .show()
+})
+
+//绑定弹窗中 审核按钮事件
+dialog4.on('click', '[type="button"]', function() {
+  var $this = $(this),
+  actionType = $this.data("actionType"),
+  toSendData = dialog4.$element.find('form').serializeArray()
+  //审核弹框
+  if (actionType) {
+    switch (actionType) {
+      case 'pass':
+        toSendData.push({
+          name: "auditStatus",
+          value: "AUDIT_PASS"
+        })
+        break;
+      case 'reject':
+        toSendData.push({
+          name: "auditStatus",
+          value: "AUDIT_REJECT"
+        })
+        break;
+      default:;
+    }
+    dialog4.ajaxSubmit(null, toSendData)
+  }
+})
+</code></pre>
+</section>
+
+<section>
+<h4><a id="event">弹窗事件</a></h4>
+<p>目前弹窗对外暴露 <code>ajaxSubmitSuccess</code> 事件，通过给该事件绑定处理函数可进行相应操作，比如：成功提交数据后刷新页面。</p>
+<div class="form-group">
+  <button type="button" class="btn btn-secondary" id="eventDialog">点我看栗子</button>
+</div>
+<script>
+$(function(){
+  var dialog5 = new Dialog();
+
+  function contentTpl4() {
+  /*!
+  <form action="/data/ajax_success.json" method="get">
+    <div class="alert alert-danger" role="alert" style="display:none;"></div>
+    <label>备注</label>
+    <textarea class="form-control" name="note" rows="5"></textarea>
+  </form>
+  */
+  }
+
+  $('#eventDialog').on('click', function(){
+    var dialogContentEle = $(dialog5._build(dialog5._getDoc(contentTpl4), null));
+    dialog5
+      .insertDialogContent(dialogContentEle.get(0).outerHTML)
+      .show()
+  })
+
+  $(document).on('ajaxSubmitSuccess', function(){
+    location.reload()
+  })
+})
+</script>
+<pre><code>&lt;!-- <code class="html">HTML</code> --&gt;
+&lt;button type="button" class="btn btn-secondary" id="eventDialog"&gt;点我看栗子&lt;/button&gt;
+
+// <code class="js">JavaScript</code>
+var dialog5 = new Dialog();
+
+function contentTpl4() {
+/*!
+&lt;form action="/action.htm"&gt;
+  &lt;div class="alert alert-danger" role="alert" style="display:none;"&gt;&lt;/div&gt;
+  &lt;label&gt;备注&lt;/label&gt;
+  &lt;textarea class="form-control" name="note" rows="5"&gt;&lt;/textarea&gt;
+&lt;/form&gt;
+*/
+}
+
+$('#eventDialog').on('click', function(){
+  var dialogContentEle = $(dialog5._build(dialog5._getDoc(contentTpl4), null));
+  dialog5
+    .insertDialogContent(dialogContentEle.get(0).outerHTML)
+    .show()
+})
+
+// 表单提交成功刷新页面
+$(document).on('ajaxSubmitSuccess', function(){
+  location.reload()
+})
+</code></pre>
+</section>
+</div><!-- container -->
+</body>
+</html>
