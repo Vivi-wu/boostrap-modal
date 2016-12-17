@@ -1,6 +1,7 @@
 # boostrap-modal
 
 js: jQuery
+
 css: Bootstrap v4
 
 弹窗宽高、标题、内容、页脚可在初始化时定制，
