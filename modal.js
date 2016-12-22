@@ -79,7 +79,7 @@ $.extend(Dialog.prototype, {
     },
     _switchThis: function (fn, obj) {
         return function () {
-            return fn.apply(obj, arguments)
+            fn.apply(obj, arguments)
         }
     },
     _getDoc: function (fn) {
