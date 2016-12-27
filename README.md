@@ -1,6 +1,6 @@
-# boostrap-modal
+# bootstrap-modal
 
-[Demo](https://vivi-wu.github.io/boostrap-modal/)
+[Demo](https://vivi-wu.github.io/bootstrap-modal/){:target="_blank"}
 
 js: jQuery
 
